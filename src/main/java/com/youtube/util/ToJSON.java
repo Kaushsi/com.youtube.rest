@@ -4,11 +4,13 @@ import java.sql.ResultSet;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
+import org.owasp.esapi.ESAPI;
 
 public class ToJSON {
 	
 	public JSONArray toJSONArray(ResultSet rs) {
 		JSONArray jsonArray = new JSONArray();
+		String temp = null;
 		try {
 			java.sql.ResultSetMetaData rsmd = rs.getMetaData();
 			
@@ -16,7 +18,7 @@ public class ToJSON {
 				int numColumns = rsmd.getColumnCount();
 				JSONObject obj = new JSONObject();
 				
-				for (int i = 1; i < numColumns + 1; i++) {
+				for (int i = 1; i < numColumns+1; i++) {
 					String columnName = rsmd.getColumnName(i);
 					if (rsmd.getColumnType(i)== java.sql.Types.ARRAY) {
 						obj.put(columnName, rs.getArray(columnName));
@@ -47,8 +49,12 @@ public class ToJSON {
 						System.out.println("ToJSON: INTEGER");
 					}
 					else if (rsmd.getColumnType(i)== java.sql.Types.VARCHAR) {
-						obj.put(columnName, rs.getString(columnName));
-						System.out.println("ToJSON: VARCHAR");
+						temp = rs.getString(columnName);
+						temp = ESAPI.encoder().canonicalize(temp);
+						temp = ESAPI.encoder().encodeForHTML(temp);
+						obj.put(columnName, temp);
+						/*obj.put(columnName, rs.getString(columnName));
+						System.out.println("ToJSON: VARCHAR");*/
 					}
 					else if (rsmd.getColumnType(i)== java.sql.Types.NVARCHAR) {
 						obj.put(columnName, rs.getString(columnName));
