@@ -16,7 +16,7 @@ import com.youtube.dao.OracleDao;
 import com.youtube.util.ToJSON;
 
 
-@Path("v1/inventory/*")
+@Path("v1/inventory")
 public class V1_Inventory {
 
 	@GET
