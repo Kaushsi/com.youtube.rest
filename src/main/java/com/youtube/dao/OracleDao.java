@@ -1,5 +1,7 @@
 package com.youtube.dao;
 
+import java.sql.Connection;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -25,5 +27,17 @@ public class OracleDao {
 		}
 		
 		return OracleDatasource;
+	}
+	
+	protected static Connection getConnection()
+	{
+		Connection conn = null;
+		try {
+			conn = OracleDaoConn().getConnection();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return conn;
 	}
 }
