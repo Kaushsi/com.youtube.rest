@@ -8,6 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONArray;
 
@@ -20,11 +21,11 @@ public class V1_Inventory {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String returnAllPcParts()  throws Exception {
+	public Response returnAllPcParts()  throws Exception {
 		PreparedStatement query = null;
 		Connection conn = null;
 		String returnString = null;
-		
+		Response resp = null;
 		try {
 			conn = OracleDao.OracleDaoConn().getConnection();
 			query = conn.prepareStatement("select * from PC_PARTS");
@@ -32,14 +33,15 @@ public class V1_Inventory {
 			ToJSON converter = new ToJSON();
 			JSONArray jsonArray = converter.toJSONArray(rs);
 			query.close();
-	
 			returnString = jsonArray.toString();
+			resp = Response.ok(returnString).build();
+	
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (conn != null) conn.close();
 		}
 		
-		return returnString;
+		return resp;
 	}
 }
