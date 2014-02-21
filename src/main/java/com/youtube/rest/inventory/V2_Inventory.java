@@ -50,21 +50,53 @@ public class V2_Inventory {
 	@Path("/{brand}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response returnBrand(@PathParam("brand") String brand)  throws Exception {
-		
+	public Response returnBrand(
+				@PathParam("brand") String brand) 
+				throws Exception {
+
 		String returnString = null;
+
 		JSONArray json = new JSONArray();
-		
+
 		try {
+
 			SchemaDao dao = new SchemaDao();
-			json = dao.queryReturnedBrandParts(brand);
+
+			json = dao.queryReturnBrandParts(brand);
 			returnString = json.toString();
-	
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server is not able to process your request").build();
-		} 
-		
+			return Response.status(500).entity("Server was not able to process your request").build();
+		}
+
+		return Response.ok(returnString).build();
+	}
+	
+	@Path("/{brand}/{item_number}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response returnSpecificBrandItem(
+				@PathParam("brand") String brand,
+				@PathParam("item_number") int item_number) 
+				throws Exception {
+
+		String returnString = null;
+
+		JSONArray json = new JSONArray();
+
+		try {
+
+			SchemaDao dao = new SchemaDao();
+
+			json = dao.queryReturnedBrandItemNumber(brand, item_number);
+			returnString = json.toString();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).entity("Server was not able to process your request").build();
+		}
+
 		return Response.ok(returnString).build();
 	}
 }
